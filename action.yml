@@ -1,0 +1,20 @@
+---
+name: 'React Native Setup'
+description: 'Setup the environment for running a React Native application'
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'yarn'
+    - run: yarn --frozen-lockfile
+      shell: bash
+    - uses: actions/cache@v3
+      with:
+        path: ios/Pods
+        key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-pods-
+    - run: cd ios && pod install --repo-update
+      shell: bash
